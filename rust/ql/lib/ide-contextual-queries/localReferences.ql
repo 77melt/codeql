@@ -8,14 +8,12 @@
  */
 
 import codeql.IDEContextual
-import codeql.rust.elements.Locatable
-import codeql.rust.elements.Variable
 import Definitions
 
 external string selectedSourceFile();
 
-from Locatable e, Variable def, string kind
+from Use use, Definition def, string kind
 where
-  def = definitionOf(e, kind) and
-  def.getLocation().getFile() = getFileBySourceArchiveName(selectedSourceFile())
-select e, def, kind
+  def = definitionOf(use, kind) and
+  def.hasLocationInfo(getFileBySourceArchiveName(selectedSourceFile()).getAbsolutePath(), _, _, _, _)
+select use, def, kind
